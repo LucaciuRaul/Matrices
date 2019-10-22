@@ -61,7 +61,7 @@ namespace Lab2
             }
         }
 
-        //Multiplication using Threads --> Done if the matrix rank is > 10, then we divide even the rows and column and multiply them in separate Threads
+        //Multiplication using Threads --> If the matrix rank is > 5, we divide the rows and columns and multiply them in separate Threads
         public static Matrix operator *(Matrix a, Matrix b)
         {
             Matrix result = new Matrix(a.Row, b.Column);
@@ -79,14 +79,15 @@ namespace Lab2
                     }
                     else
                     {
-                        for (int l = 0; l <= a.Column; l += 5)
+                        int nr_elements = 5;
+                        for (int l = 0; l <= a.Column; l += nr_elements)
                         {
-                            var auxA = a.GetRow(i).Skip(5);
-                            var auxB = b.GetColumn(j).Skip(5);
+                            var auxA = a.GetRow(i).Skip(l);
+                            var auxB = b.GetColumn(j).Skip(l);
                             Thread thread = new Thread(() => VectorMult(
                                 tempi, tempj,
-                                auxA.Take(5).ToArray(),
-                                auxB.Take(5).ToArray(),
+                                auxA.Take(nr_elements).ToArray(),
+                                auxB.Take(nr_elements).ToArray(),
                                 result));
                             thread.Start();
                             threads.Add(thread);
